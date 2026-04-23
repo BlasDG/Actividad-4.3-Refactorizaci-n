@@ -95,7 +95,8 @@ public VentanaDepart(JFrame f )
 
 public void actionPerformed(ActionEvent e) 
 {   int dep, confirm;
-	String text = "DEPARTAMENTO EXISTE.";
+	String noexistedepart = "DEPARTAMENTO EXISTE.";
+	String text = noexistedepart;
 	if (e.getSource() == balta) { //SE PULSA EL BOTON alta   	
 		mensaje.setText(" has pulsado el boton alta");   
 		try {
