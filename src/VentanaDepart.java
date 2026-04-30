@@ -218,4 +218,15 @@ public class VentanaDepart extends JFrame implements ActionListener {
 			file.close();
 		} catch (Exception e) {}
 	}
+
+	public class claseAnidada {
+		void entrada() {
+			System.out.println("Método entrada.");
+		}
+
+		String salida(int d) {
+			System.out.println("Salida.");
+			return "Salida el " + d;
+		}
+	} // fin clase anidada
 }
