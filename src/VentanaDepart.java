@@ -97,7 +97,8 @@ public void actionPerformed(ActionEvent e)
 {   int dep, confirm;
 	String noexistedepart = "DEPARTAMENTO EXISTE.";
 	String text = noexistedepart;
-	if (e.getSource() == balta) { //SE PULSA EL BOTON alta   	
+	JButton altadepart = balta;
+	if (e.getSource() == altadepart) { //SE PULSA EL BOTON alta   	
 		mensaje.setText(" has pulsado el boton alta");   
 		try {
 	    	  dep=Integer.parseInt(num.getText());
@@ -121,7 +122,8 @@ public void actionPerformed(ActionEvent e)
 	    		 } 
 	    }
 		   
-	if (e.getSource() == consu) { //SE PULSA EL BOTON  consultar  	
+	JButton consuldepart = consu;
+	if (e.getSource() == consuldepart) { //SE PULSA EL BOTON  consultar  	
 		mensaje.setText(" has pulsado el boton alta");   
 		try {
 	    	  dep=Integer.parseInt(num.getText());
@@ -142,7 +144,8 @@ public void actionPerformed(ActionEvent e)
 	      
 	    }
 		  
-	if (e.getSource() == borra) { //SE PULSA EL BOTON  borrar  	
+	JButton borradepart = borra;
+	if (e.getSource() == borradepart) { //SE PULSA EL BOTON  borrar  	
 		mensaje.setText(" has pulsado el boton Borrar");   
 		try {
 	    	  dep=Integer.parseInt(num.getText());
@@ -171,7 +174,8 @@ public void actionPerformed(ActionEvent e)
 	       catch (IOException ex2) 
 	    	   {mensaje.setText("ERRORRR EN EL FICHERO. Fichero no existe. (BORRAR)");} 
 	    }
-	if (e.getSource() == modif) { //SE PULSA EL BOTON  modificar  	
+	JButton modifdepart = modif;
+	if (e.getSource() == modifdepart) { //SE PULSA EL BOTON  modificar  	
 		mensaje.setText(" has pulsado el boton Modificar.");   
 		try {
 	    	  dep=Integer.parseInt(num.getText());
