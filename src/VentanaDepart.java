@@ -5,8 +5,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import javax.swing.*;
 
-public class VentanaDepart extends JFrame implements ActionListener {
-
+public class VentanaDepart extends JFrame implements ActionListener, InterfaceVentanaDepart {
 	private static final long serialVersionUID = 1L;
 
 	private String existedepart = "DEPARTAMENTO EXISTE.";
@@ -73,7 +72,7 @@ public class VentanaDepart extends JFrame implements ActionListener {
 
 	// --- MÉTODOS CON FIRMA CAMBIADA (Actividad 4.8) ---
 
-	private int altadepart(String p) {
+	public int altadepart(String p) {
 		mensaje.setText("Ejecutando: " + p);
 		try {
 			int dep = Integer.parseInt(num.getText());
@@ -91,7 +90,7 @@ public class VentanaDepart extends JFrame implements ActionListener {
 		return 0;
 	}
 
-	private int consuldepart(String p) {
+	public int consuldepart(String p) {
 		mensaje.setText("Ejecutando: " + p);
 		try {
 			int dep = Integer.parseInt(num.getText());
@@ -106,7 +105,7 @@ public class VentanaDepart extends JFrame implements ActionListener {
 		return 0;
 	}
 
-	private int borradepart(String p) {
+	public int borradepart(String p) {
 		mensaje.setText("Ejecutando: " + p);
 		try {
 			int dep = Integer.parseInt(num.getText());
@@ -122,7 +121,7 @@ public class VentanaDepart extends JFrame implements ActionListener {
 		return 0;
 	}
 
-	private int modifdepart(String p) {
+	public int modifdepart(String p) {
 		mensaje.setText("Ejecutando: " + p);
 		try {
 			int dep = Integer.parseInt(num.getText());
