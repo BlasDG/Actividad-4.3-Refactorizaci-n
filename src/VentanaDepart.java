@@ -9,12 +9,13 @@ public class VentanaDepart extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
-	// --- NUEVOS ATRIBUTOS Y CONSTANTES (Refactorización Actividad 4.6) ---
+	// --- REFACTORIZACIÓN ACTIVIDAD 4.6: Atributos y Constantes ---
+	// Se extraen las cadenas de texto a atributos de clase y constantes.
 	private String existedepart = "DEPARTAMENTO EXISTE.";
 	private String depar_error = "DEPARTAMENTO ERRÓNEO";
 	private static final String NOEXISTEDEPART = "DEPARTAMENTO NO EXISTE.";
-	// ---------------------------------------------------------------------
 
+	// Componentes de la Interfaz
 	JTextField num = new JTextField(10);
 	JTextField nombre = new JTextField(25);
 	JTextField loc = new JTextField(25);
@@ -38,6 +39,7 @@ public class VentanaDepart extends JFrame implements ActionListener {
 	public VentanaDepart(JFrame f) {
 		setTitle("GESTIÓN DE DEPARTAMENTOS.");
 
+		// Paneles de la interfaz
 		JPanel p0 = new JPanel();
 		c = Color.CYAN;
 		p0.add(titulo);
@@ -84,6 +86,7 @@ public class VentanaDepart extends JFrame implements ActionListener {
 
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+		// Registro de Eventos
 		balta.addActionListener(this);
 		breset.addActionListener(this);
 		fin.addActionListener(this);
@@ -93,138 +96,141 @@ public class VentanaDepart extends JFrame implements ActionListener {
 		ver.addActionListener(this);
 	}
 
+	// --- REFACTORIZACIÓN ACTIVIDAD 4.7: actionPerformed simplificado ---
+	// Se extrae la lógica de cada botón a métodos individuales.
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		int dep, confirm;
-
-		// El botón ALTA
 		if (e.getSource() == balta) {
-			mensaje.setText(" has pulsado el boton alta");
-			try {
-				dep = Integer.parseInt(num.getText());
-				if (dep > 0) {
-					if (consultar(dep)) {
-						mensaje.setText(existedepart); // Uso de atributo
-					} else {
-						mensaje.setText("NUEVO DEPARTAMENTO.");
-						grabar(dep, nombre.getText(), loc.getText());
-						mensaje.setText("NUEVO DEPARTAMENTO GRABADO.");
-					}
-				} else {
-					mensaje.setText("DEPARTAMENTO DEBE SER MAYOR QUE 0");
-				}
-			} catch (java.lang.NumberFormatException ex) {
-				mensaje.setText(depar_error); // Uso de atributo
-			} catch (IOException ex2) {
-				mensaje.setText("ERRORRR EN EL FICHERO. Fichero no existe. (ALTA)");
-			}
-		}
-
-		// El botón CONSULTAR
-		if (e.getSource() == consu) {
-			mensaje.setText(" has pulsado el boton consultar");
-			try {
-				dep = Integer.parseInt(num.getText());
-				if (dep > 0) {
-					if (consultar(dep)) {
-						mensaje.setText(existedepart); // Uso de atributo
-						visualiza(dep);
-					} else {
-						mensaje.setText(NOEXISTEDEPART); // Uso de constante
-						nombre.setText(" "); loc.setText(" ");
-					}
-				} else {
-					mensaje.setText("DEPARTAMENTO DEBE SER MAYOR QUE 0");
-				}
-			} catch (java.lang.NumberFormatException ex) {
-				mensaje.setText(depar_error); // Uso de atributo
-			} catch (IOException ex2) {
-				mensaje.setText(" ERRORRR EN EL FICHERO. Fichero no existe. (ALTA)");
-			}
-		}
-
-		// El botón BORRAR
-		if (e.getSource() == borra) {
-			mensaje.setText(" has pulsado el boton Borrar");
-			try {
-				dep = Integer.parseInt(num.getText());
-				if (dep > 0) {
-					if (consultar(dep)) {
-						mensaje.setText(existedepart); // Uso de atributo
-						visualiza(dep);
-						confirm = JOptionPane.showConfirmDialog(this, "ESTAS SEGURO DE BORRAR...", "AVISO BORRADO.",
-								JOptionPane.OK_CANCEL_OPTION);
-						if (confirm == 0) {
-							borrar(dep);
-							mensaje.setText(" REGISTRO BORRADOO: " + dep);
-							nombre.setText(" "); loc.setText(" ");
-						}
-					} else {
-						mensaje.setText(NOEXISTEDEPART); // Uso de constante
-						nombre.setText(" "); loc.setText(" ");
-					}
-				} else {
-					mensaje.setText("DEPARTAMENTO DEBE SER MAYOR QUE 0");
-				}
-			} catch (java.lang.NumberFormatException ex) {
-				mensaje.setText(depar_error); // Uso de atributo
-			} catch (IOException ex2) {
-				mensaje.setText("ERRORRR EN EL FICHERO. Fichero no existe. (BORRAR)");
-			}
-		}
-
-		// El botón MODIFICAR
-		if (e.getSource() == modif) {
-			mensaje.setText(" has pulsado el boton Modificar.");
-			try {
-				dep = Integer.parseInt(num.getText());
-				if (dep > 0) {
-					if (consultar(dep)) {
-						mensaje.setText(existedepart); // Uso de atributo
-						confirm = JOptionPane.showConfirmDialog(this, "ESTAS SEGURO DE MODIFICAR...", "AVISO MODIFICACIÓN.",
-								JOptionPane.OK_CANCEL_OPTION);
-						if (confirm == 0) {
-							modificar(dep);
-							mensaje.setText(" REGISTRO MODIFICADO: " + dep);
-						}
-					} else {
-						mensaje.setText(NOEXISTEDEPART); // Uso de constante
-						nombre.setText(" "); loc.setText(" ");
-					}
-				} else {
-					mensaje.setText("DEPARTAMENTO DEBE SER MAYOR QUE 0");
-				}
-			} catch (java.lang.NumberFormatException ex) {
-				mensaje.setText(depar_error); // Uso de atributo
-			} catch (IOException ex2) {
-				mensaje.setText(" ERRORRR EN EL FICHERO. Fichero no existe. (MODIFICAR)");
-			}
-		}
-
-		if (e.getSource() == fin) {
+			altadepart();
+		} else if (e.getSource() == consu) {
+			consuldepart();
+		} else if (e.getSource() == borra) {
+			borradepart();
+		} else if (e.getSource() == modif) {
+			modifdepart();
+		} else if (e.getSource() == fin) {
 			System.exit(0);
-		}
-
-		if (e.getSource() == ver) {
+		} else if (e.getSource() == ver) {
 			try {
 				mensaje.setText("Visualizando el fichero por la consolaa.....");
 				verporconsola();
 			} catch (IOException e1) {
 				System.out.println("ERRROR AL LEEERRRRRR AleatorioDep.dat");
 			}
-		}
-
-		if (e.getSource() == breset) {
+		} else if (e.getSource() == breset) {
 			mensaje.setText(" has pulsado el boton limpiar..");
-			num.setText(" "); nombre.setText(" ");
+			num.setText(" ");
+			nombre.setText(" ");
 			loc.setText(" ");
 		}
 	}
 
-	// ... (El resto de métodos: verporconsola, consultar, visualiza, borrar, modificar, grabar permanecen igual)
+	// --- MÉTODOS EXTRAÍDOS (Extract Method) ---
+
+	private void altadepart() {
+		mensaje.setText(" has pulsado el boton alta");
+		try {
+			int dep = Integer.parseInt(num.getText());
+			if (dep > 0) {
+				if (consultar(dep)) {
+					mensaje.setText(existedepart);
+				} else {
+					mensaje.setText("NUEVO DEPARTAMENTO.");
+					grabar(dep, nombre.getText(), loc.getText());
+					mensaje.setText("NUEVO DEPARTAMENTO GRABADO.");
+				}
+			} else {
+				mensaje.setText("DEPARTAMENTO DEBE SER MAYOR QUE 0");
+			}
+		} catch (java.lang.NumberFormatException ex) {
+			mensaje.setText(depar_error);
+		} catch (IOException ex2) {
+			mensaje.setText("ERRORRR EN EL FICHERO. Fichero no existe. (ALTA)");
+		}
+	}
+
+	private void consuldepart() {
+		mensaje.setText(" has pulsado el boton consultar");
+		try {
+			int dep = Integer.parseInt(num.getText());
+			if (dep > 0) {
+				if (consultar(dep)) {
+					mensaje.setText(existedepart);
+					visualiza(dep);
+				} else {
+					mensaje.setText(NOEXISTEDEPART);
+					nombre.setText(" "); loc.setText(" ");
+				}
+			} else {
+				mensaje.setText("DEPARTAMENTO DEBE SER MAYOR QUE 0");
+			}
+		} catch (java.lang.NumberFormatException ex) {
+			mensaje.setText(depar_error);
+		} catch (IOException ex2) {
+			mensaje.setText(" ERRORRR EN EL FICHERO. Fichero no existe. (ALTA)");
+		}
+	}
+
+	private void borradepart() {
+		mensaje.setText(" has pulsado el boton Borrar");
+		try {
+			int dep = Integer.parseInt(num.getText());
+			if (dep > 0) {
+				if (consultar(dep)) {
+					mensaje.setText(existedepart);
+					visualiza(dep);
+					int confirm = JOptionPane.showConfirmDialog(this, "ESTAS SEGURO DE BORRAR...", "AVISO BORRADO.",
+							JOptionPane.OK_CANCEL_OPTION);
+					if (confirm == 0) {
+						borrar(dep);
+						mensaje.setText(" REGISTRO BORRADOO: " + dep);
+						nombre.setText(" "); loc.setText(" ");
+					}
+				} else {
+					mensaje.setText(NOEXISTEDEPART);
+					nombre.setText(" "); loc.setText(" ");
+				}
+			} else {
+				mensaje.setText("DEPARTAMENTO DEBE SER MAYOR QUE 0");
+			}
+		} catch (java.lang.NumberFormatException ex) {
+			mensaje.setText(depar_error);
+		} catch (IOException ex2) {
+			mensaje.setText("ERRORRR EN EL FICHERO. Fichero no existe. (BORRAR)");
+		}
+	}
+
+	private void modifdepart() {
+		mensaje.setText(" has pulsado el boton Modificar.");
+		try {
+			int dep = Integer.parseInt(num.getText());
+			if (dep > 0) {
+				if (consultar(dep)) {
+					mensaje.setText(existedepart);
+					int confirm = JOptionPane.showConfirmDialog(this, "ESTAS SEGURO DE MODIFICAR...", "AVISO MODIFICACIÓN.",
+							JOptionPane.OK_CANCEL_OPTION);
+					if (confirm == 0) {
+						modificar(dep);
+						mensaje.setText(" REGISTRO MODIFICADO: " + dep);
+					}
+				} else {
+					mensaje.setText(NOEXISTEDEPART);
+					nombre.setText(" "); loc.setText(" ");
+				}
+			} else {
+				mensaje.setText("DEPARTAMENTO DEBE SER MAYOR QUE 0");
+			}
+		} catch (java.lang.NumberFormatException ex) {
+			mensaje.setText(depar_error);
+		} catch (IOException ex2) {
+			mensaje.setText(" ERRORRR EN EL FICHERO. Fichero no existe. (MODIFICAR)");
+		}
+	}
+
+	// --- MÉTODOS DE ACCESO A DATOS ---
 
 	public void verporconsola() throws IOException {
-		String nom = "", locStr = ""; int dep = 0; long pos;
+		String nom = "", localidad = ""; int dep = 0; long pos;
 		File fichero = new File("AleatorioDep.dat");
 		RandomAccessFile file = new RandomAccessFile(fichero, "r");
 		char cad[] = new char[10], aux;
@@ -244,15 +250,15 @@ public class VentanaDepart extends JFrame implements ActionListener {
 					aux = file.readChar();
 					cad[i] = aux;
 				}
-				locStr = new String(cad);
-				System.out.println("DEP: " + dep + ", Nombre: " + nom + ", Localidad: " + locStr);
+				localidad = new String(cad);
+				System.out.println("DEP: " + dep + ", Nombre: " + nom + ", Localidad: " + localidad);
 				pos = pos + 44;
 				if (file.getFilePointer() == file.length()) break;
 			}
 			file.close();
 			System.out.println(" ------------------------------------------");
 		} else {
-			System.out.println(" ---------FICHERO VACÍO --------------------");
+			System.out.println(" ---------FICHERO VACIÍO --------------------");
 		}
 	}
 
@@ -274,7 +280,7 @@ public class VentanaDepart extends JFrame implements ActionListener {
 	}
 
 	void visualiza(int dep) {
-		String nom = "", loca = ""; long pos; int depa;
+		long pos; int depa;
 		File fichero = new File("AleatorioDep.dat");
 		try {
 			RandomAccessFile file = new RandomAccessFile(fichero, "r");
@@ -290,10 +296,8 @@ public class VentanaDepart extends JFrame implements ActionListener {
 				aux = file.readChar();
 				loc1[i] = aux;
 			}
-			nom = new String(nom1);
-			loca = new String(loc1);
-			nombre.setText(nom);
-			loc.setText(loca);
+			nombre.setText(new String(nom1));
+			loc.setText(new String(loc1));
 			file.close();
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -301,18 +305,15 @@ public class VentanaDepart extends JFrame implements ActionListener {
 	}
 
 	void borrar(int dep) {
-		String nom = "", loca = ""; StringBuffer buffer = null;
 		long pos; File fichero = new File("AleatorioDep.dat");
 		try {
 			RandomAccessFile file = new RandomAccessFile(fichero, "rw");
 			pos = 44 * (dep - 1);
 			file.seek(pos);
 			file.writeInt(0);
-			buffer = new StringBuffer(nom);
+			StringBuffer buffer = new StringBuffer("");
 			buffer.setLength(10);
 			file.writeChars(buffer.toString());
-			buffer = new StringBuffer(loca);
-			buffer.setLength(10);
 			file.writeChars(buffer.toString());
 			file.close();
 		} catch (IOException e1) {
@@ -321,19 +322,16 @@ public class VentanaDepart extends JFrame implements ActionListener {
 	}
 
 	void modificar(int dep) {
-		String nom = "", loca = ""; StringBuffer buffer = null;
 		long pos; File fichero = new File("AleatorioDep.dat");
 		try {
 			RandomAccessFile file = new RandomAccessFile(fichero, "rw");
 			pos = 44 * (dep - 1);
 			file.seek(pos);
 			file.writeInt(dep);
-			nom = nombre.getText();
-			loca = loc.getText();
-			buffer = new StringBuffer(nom);
+			StringBuffer buffer = new StringBuffer(nombre.getText());
 			buffer.setLength(10);
 			file.writeChars(buffer.toString());
-			buffer = new StringBuffer(loca);
+			buffer = new StringBuffer(loc.getText());
 			buffer.setLength(10);
 			file.writeChars(buffer.toString());
 			file.close();
@@ -342,18 +340,17 @@ public class VentanaDepart extends JFrame implements ActionListener {
 		}
 	}
 
-	void grabar(int dep, String nom, String loc) {
-		long pos; StringBuffer buffer = null;
-		File fichero = new File("AleatorioDep.dat");
+	void grabar(int dep, String nom, String local) {
+		long pos; File fichero = new File("AleatorioDep.dat");
 		try {
 			RandomAccessFile file = new RandomAccessFile(fichero, "rw");
 			pos = 44 * (dep - 1);
 			file.seek(pos);
 			file.writeInt(dep);
-			buffer = new StringBuffer(nom);
+			StringBuffer buffer = new StringBuffer(nom);
 			buffer.setLength(10);
 			file.writeChars(buffer.toString());
-			buffer = new StringBuffer(loc);
+			buffer = new StringBuffer(local);
 			buffer.setLength(10);
 			file.writeChars(buffer.toString());
 			file.close();
