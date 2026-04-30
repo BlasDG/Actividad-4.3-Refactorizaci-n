@@ -1,9 +1,9 @@
-import javax.swing.JTextField;
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class SuperclaseDepart {
+public class SuperclaseDepart extends JFrame {
     // Atributos protegidos para que VentanaDepart pueda acceder a ellos
     protected JTextField nombre = new JTextField(25);
     protected JTextField loc = new JTextField(25);
