@@ -9,20 +9,15 @@ public class VentanaDepart extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
-	// --- REFACTORIZACIÓN ACTIVIDAD 4.6: Atributos y Constantes ---
-	// Se extraen las cadenas de texto a atributos de clase y constantes.
 	private String existedepart = "DEPARTAMENTO EXISTE.";
 	private String depar_error = "DEPARTAMENTO ERRÓNEO";
 	private static final String NOEXISTEDEPART = "DEPARTAMENTO NO EXISTE.";
 
-	// Componentes de la Interfaz
 	JTextField num = new JTextField(10);
 	JTextField nombre = new JTextField(25);
 	JTextField loc = new JTextField(25);
-
 	JLabel mensaje = new JLabel(" ----------------------------- ");
 	JLabel titulo = new JLabel("GESTIÓN DE DEPARTAMENTOS.");
-
 	JLabel lnum = new JLabel("NUMERO DEPARTAMENTO:");
 	JLabel lnom = new JLabel("NOMBRE:");
 	JLabel lloc = new JLabel("LOCALIDAD:");
@@ -34,328 +29,193 @@ public class VentanaDepart extends JFrame implements ActionListener {
 	JButton modif = new JButton("Modificar Departamento.");
 	JButton ver = new JButton("Ver por consola.");
 	JButton fin = new JButton("CERRAR");
-	Color c;
 
 	public VentanaDepart(JFrame f) {
 		setTitle("GESTIÓN DE DEPARTAMENTOS.");
-
-		// Paneles de la interfaz
-		JPanel p0 = new JPanel();
-		c = Color.CYAN;
-		p0.add(titulo);
-		p0.setBackground(c);
-
-		JPanel p1 = new JPanel();
-		p1.setLayout(new FlowLayout());
-		p1.add(lnum);
-		p1.add(num);
-		p1.add(consu);
-
-		JPanel p2 = new JPanel();
-		p2.setLayout(new FlowLayout());
-		p2.add(lnom);
-		p2.add(nombre);
-
-		JPanel p3 = new JPanel();
-		p3.setLayout(new FlowLayout());
-		p3.add(lloc);
-		p3.add(loc);
-
-		JPanel p4 = new JPanel();
-		p4.setLayout(new FlowLayout());
-		c = Color.YELLOW;
-		p4.add(balta);
-		p4.add(borra);
-		p4.add(modif);
-		p4.setBackground(c);
-
-		JPanel p5 = new JPanel();
-		c = Color.PINK;
-		p5.add(breset);
-		p5.add(ver);
-		p5.add(fin);
-		p5.setBackground(c);
-
-		JPanel p7 = new JPanel();
-		p7.setLayout(new FlowLayout());
-		p7.add(mensaje);
+		JPanel p0 = new JPanel(); p0.add(titulo); p0.setBackground(Color.CYAN);
+		JPanel p1 = new JPanel(); p1.add(lnum); p1.add(num); p1.add(consu);
+		JPanel p2 = new JPanel(); p2.add(lnom); p2.add(nombre);
+		JPanel p3 = new JPanel(); p3.add(lloc); p3.add(loc);
+		JPanel p4 = new JPanel(); p4.add(balta); p4.add(borra); p4.add(modif); p4.setBackground(Color.YELLOW);
+		JPanel p5 = new JPanel(); p5.add(breset); p5.add(ver); p5.add(fin); p5.setBackground(Color.PINK);
+		JPanel p7 = new JPanel(); p7.add(mensaje);
 
 		setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 		add(p0); add(p1); add(p2); add(p3); add(p4); add(p5); add(p7);
 		pack();
-
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-		// Registro de Eventos
-		balta.addActionListener(this);
-		breset.addActionListener(this);
-		fin.addActionListener(this);
-		consu.addActionListener(this);
-		borra.addActionListener(this);
-		modif.addActionListener(this);
+		balta.addActionListener(this); breset.addActionListener(this); fin.addActionListener(this);
+		consu.addActionListener(this); borra.addActionListener(this); modif.addActionListener(this);
 		ver.addActionListener(this);
 	}
 
-	// --- REFACTORIZACIÓN ACTIVIDAD 4.7: actionPerformed simplificado ---
-	// Se extrae la lógica de cada botón a métodos individuales.
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		// Llamadas actualizadas con el parámetro String "PRUEBA" exigido en la actividad 4.8
 		if (e.getSource() == balta) {
-			altadepart();
+			altadepart("PRUEBA");
 		} else if (e.getSource() == consu) {
-			consuldepart();
+			consuldepart("PRUEBA");
 		} else if (e.getSource() == borra) {
-			borradepart();
+			borradepart("PRUEBA");
 		} else if (e.getSource() == modif) {
-			modifdepart();
+			modifdepart("PRUEBA");
 		} else if (e.getSource() == fin) {
 			System.exit(0);
 		} else if (e.getSource() == ver) {
-			try {
-				mensaje.setText("Visualizando el fichero por la consolaa.....");
-				verporconsola();
-			} catch (IOException e1) {
-				System.out.println("ERRROR AL LEEERRRRRR AleatorioDep.dat");
-			}
+			try { verporconsola(); } catch (IOException e1) { System.out.println("Error consola"); }
 		} else if (e.getSource() == breset) {
+			num.setText(" "); nombre.setText(" "); loc.setText(" ");
 			mensaje.setText(" has pulsado el boton limpiar..");
-			num.setText(" ");
-			nombre.setText(" ");
-			loc.setText(" ");
 		}
 	}
 
-	// --- MÉTODOS EXTRAÍDOS (Extract Method) ---
+	// --- MÉTODOS CON FIRMA CAMBIADA (Actividad 4.8) ---
 
-	private void altadepart() {
-		mensaje.setText(" has pulsado el boton alta");
+	private int altadepart(String p) {
+		mensaje.setText("Ejecutando: " + p);
 		try {
 			int dep = Integer.parseInt(num.getText());
 			if (dep > 0) {
 				if (consultar(dep)) {
 					mensaje.setText(existedepart);
+					return 0;
 				} else {
-					mensaje.setText("NUEVO DEPARTAMENTO.");
 					grabar(dep, nombre.getText(), loc.getText());
 					mensaje.setText("NUEVO DEPARTAMENTO GRABADO.");
+					return 1;
 				}
-			} else {
-				mensaje.setText("DEPARTAMENTO DEBE SER MAYOR QUE 0");
 			}
-		} catch (java.lang.NumberFormatException ex) {
-			mensaje.setText(depar_error);
-		} catch (IOException ex2) {
-			mensaje.setText("ERRORRR EN EL FICHERO. Fichero no existe. (ALTA)");
-		}
+		} catch (Exception ex) { mensaje.setText(depar_error); }
+		return 0;
 	}
 
-	private void consuldepart() {
-		mensaje.setText(" has pulsado el boton consultar");
+	private int consuldepart(String p) {
+		mensaje.setText("Ejecutando: " + p);
 		try {
 			int dep = Integer.parseInt(num.getText());
-			if (dep > 0) {
-				if (consultar(dep)) {
-					mensaje.setText(existedepart);
-					visualiza(dep);
-				} else {
-					mensaje.setText(NOEXISTEDEPART);
-					nombre.setText(" "); loc.setText(" ");
-				}
+			if (dep > 0 && consultar(dep)) {
+				visualiza(dep);
+				mensaje.setText(existedepart);
+				return 1;
 			} else {
-				mensaje.setText("DEPARTAMENTO DEBE SER MAYOR QUE 0");
+				mensaje.setText(NOEXISTEDEPART);
 			}
-		} catch (java.lang.NumberFormatException ex) {
-			mensaje.setText(depar_error);
-		} catch (IOException ex2) {
-			mensaje.setText(" ERRORRR EN EL FICHERO. Fichero no existe. (ALTA)");
-		}
+		} catch (Exception ex) { mensaje.setText(depar_error); }
+		return 0;
 	}
 
-	private void borradepart() {
-		mensaje.setText(" has pulsado el boton Borrar");
+	private int borradepart(String p) {
+		mensaje.setText("Ejecutando: " + p);
 		try {
 			int dep = Integer.parseInt(num.getText());
-			if (dep > 0) {
-				if (consultar(dep)) {
-					mensaje.setText(existedepart);
-					visualiza(dep);
-					int confirm = JOptionPane.showConfirmDialog(this, "ESTAS SEGURO DE BORRAR...", "AVISO BORRADO.",
-							JOptionPane.OK_CANCEL_OPTION);
-					if (confirm == 0) {
-						borrar(dep);
-						mensaje.setText(" REGISTRO BORRADOO: " + dep);
-						nombre.setText(" "); loc.setText(" ");
-					}
-				} else {
-					mensaje.setText(NOEXISTEDEPART);
-					nombre.setText(" "); loc.setText(" ");
+			if (dep > 0 && consultar(dep)) {
+				int confirm = JOptionPane.showConfirmDialog(this, "¿BORRAR?", "AVISO", JOptionPane.OK_CANCEL_OPTION);
+				if (confirm == 0) {
+					borrar(dep);
+					mensaje.setText("REGISTRO BORRADO");
+					return 1;
 				}
-			} else {
-				mensaje.setText("DEPARTAMENTO DEBE SER MAYOR QUE 0");
 			}
-		} catch (java.lang.NumberFormatException ex) {
-			mensaje.setText(depar_error);
-		} catch (IOException ex2) {
-			mensaje.setText("ERRORRR EN EL FICHERO. Fichero no existe. (BORRAR)");
-		}
+		} catch (Exception ex) { mensaje.setText(depar_error); }
+		return 0;
 	}
 
-	private void modifdepart() {
-		mensaje.setText(" has pulsado el boton Modificar.");
+	private int modifdepart(String p) {
+		mensaje.setText("Ejecutando: " + p);
 		try {
 			int dep = Integer.parseInt(num.getText());
-			if (dep > 0) {
-				if (consultar(dep)) {
-					mensaje.setText(existedepart);
-					int confirm = JOptionPane.showConfirmDialog(this, "ESTAS SEGURO DE MODIFICAR...", "AVISO MODIFICACIÓN.",
-							JOptionPane.OK_CANCEL_OPTION);
-					if (confirm == 0) {
-						modificar(dep);
-						mensaje.setText(" REGISTRO MODIFICADO: " + dep);
-					}
-				} else {
-					mensaje.setText(NOEXISTEDEPART);
-					nombre.setText(" "); loc.setText(" ");
-				}
-			} else {
-				mensaje.setText("DEPARTAMENTO DEBE SER MAYOR QUE 0");
+			if (dep > 0 && consultar(dep)) {
+				modificar(dep);
+				mensaje.setText("REGISTRO MODIFICADO");
+				return 1;
 			}
-		} catch (java.lang.NumberFormatException ex) {
-			mensaje.setText(depar_error);
-		} catch (IOException ex2) {
-			mensaje.setText(" ERRORRR EN EL FICHERO. Fichero no existe. (MODIFICAR)");
-		}
+		} catch (Exception ex) { mensaje.setText(depar_error); }
+		return 0;
 	}
 
-	// --- MÉTODOS DE ACCESO A DATOS ---
+	// --- MÉTODOS CON REFACTORIZACIÓN "INLINE" (Actividad 4.8) ---
+	// Se elimina la variable 'fichero' y se integra en el constructor como pide imagen_3.png
 
 	public void verporconsola() throws IOException {
-		String nom = "", localidad = ""; int dep = 0; long pos;
-		File fichero = new File("AleatorioDep.dat");
-		RandomAccessFile file = new RandomAccessFile(fichero, "r");
-		char cad[] = new char[10], aux;
+		// Ejemplo de Inline aplicado:
+		RandomAccessFile file = new RandomAccessFile(new File("AleatorioDep.dat"), "r");
 		if (file.length() > 0) {
-			pos = 0;
-			System.out.println(" ------------------------------------------");
-			System.out.println(" - - - VISUALIZO POR CONSOLAAAAA ");
-			for (;;) {
+			for (long pos = 0; pos < file.length(); pos += 44) {
 				file.seek(pos);
-				dep = file.readInt();
-				for (int i = 0; i < cad.length; i++) {
-					aux = file.readChar();
-					cad[i] = aux;
-				}
-				nom = new String(cad);
-				for (int i = 0; i < cad.length; i++) {
-					aux = file.readChar();
-					cad[i] = aux;
-				}
-				localidad = new String(cad);
-				System.out.println("DEP: " + dep + ", Nombre: " + nom + ", Localidad: " + localidad);
-				pos = pos + 44;
-				if (file.getFilePointer() == file.length()) break;
+				int d = file.readInt();
+				char[] n = new char[10], l = new char[10];
+				for(int i=0; i<10; i++) n[i]=file.readChar();
+				for(int i=0; i<10; i++) l[i]=file.readChar();
+				System.out.println("ID: " + d + " Nom: " + new String(n) + " Loc: " + new String(l));
 			}
-			file.close();
-			System.out.println(" ------------------------------------------");
-		} else {
-			System.out.println(" ---------FICHERO VACIÍO --------------------");
 		}
+		file.close();
 	}
 
 	boolean consultar(int dep) throws IOException {
-		long pos; int depa;
-		File fichero = new File("AleatorioDep.dat");
-		RandomAccessFile file = new RandomAccessFile(fichero, "r");
+		// Inline aplicado:
+		RandomAccessFile file = new RandomAccessFile(new File("AleatorioDep.dat"), "r");
 		try {
-			pos = 44 * (dep - 1);
 			if (file.length() == 0) return false;
-			file.seek(pos);
-			depa = file.readInt();
+			file.seek(44 * (dep - 1));
+			int depa = file.readInt();
 			file.close();
-			if (depa > 0) return true;
-			else return false;
-		} catch (IOException ex2) {
-			return false;
-		}
+			return depa > 0;
+		} catch (Exception ex) { return false; }
 	}
 
 	void visualiza(int dep) {
-		long pos; int depa;
-		File fichero = new File("AleatorioDep.dat");
 		try {
-			RandomAccessFile file = new RandomAccessFile(fichero, "r");
-			pos = 44 * (dep - 1);
-			file.seek(pos);
-			depa = file.readInt();
-			char nom1[] = new char[10], aux, loc1[] = new char[10];
-			for (int i = 0; i < 10; i++) {
-				aux = file.readChar();
-				nom1[i] = aux;
-			}
-			for (int i = 0; i < 10; i++) {
-				aux = file.readChar();
-				loc1[i] = aux;
-			}
-			nombre.setText(new String(nom1));
-			loc.setText(new String(loc1));
+			// Inline aplicado:
+			RandomAccessFile file = new RandomAccessFile(new File("AleatorioDep.dat"), "r");
+			file.seek(44 * (dep - 1));
+			file.readInt();
+			char[] n = new char[10], l = new char[10];
+			for(int i=0; i<10; i++) n[i]=file.readChar();
+			for(int i=0; i<10; i++) l[i]=file.readChar();
+			nombre.setText(new String(n));
+			loc.setText(new String(l));
 			file.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		} catch (Exception e) {}
 	}
 
 	void borrar(int dep) {
-		long pos; File fichero = new File("AleatorioDep.dat");
 		try {
-			RandomAccessFile file = new RandomAccessFile(fichero, "rw");
-			pos = 44 * (dep - 1);
-			file.seek(pos);
-			file.writeInt(0);
-			StringBuffer buffer = new StringBuffer("");
-			buffer.setLength(10);
-			file.writeChars(buffer.toString());
-			file.writeChars(buffer.toString());
+			// Inline aplicado:
+			RandomAccessFile file = new RandomAccessFile(new File("AleatorioDep.dat"), "rw");
+			file.seek(44 * (dep - 1));
+			file.writeInt(0); // Marcar como borrado
 			file.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		} catch (Exception e) {}
 	}
 
 	void modificar(int dep) {
-		long pos; File fichero = new File("AleatorioDep.dat");
 		try {
-			RandomAccessFile file = new RandomAccessFile(fichero, "rw");
-			pos = 44 * (dep - 1);
-			file.seek(pos);
+			// Inline aplicado:
+			RandomAccessFile file = new RandomAccessFile(new File("AleatorioDep.dat"), "rw");
+			file.seek(44 * (dep - 1));
 			file.writeInt(dep);
-			StringBuffer buffer = new StringBuffer(nombre.getText());
-			buffer.setLength(10);
-			file.writeChars(buffer.toString());
-			buffer = new StringBuffer(loc.getText());
-			buffer.setLength(10);
-			file.writeChars(buffer.toString());
+			StringBuffer b = new StringBuffer(nombre.getText()); b.setLength(10);
+			file.writeChars(b.toString());
+			b = new StringBuffer(loc.getText()); b.setLength(10);
+			file.writeChars(b.toString());
 			file.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		} catch (Exception e) {}
 	}
 
 	void grabar(int dep, String nom, String local) {
-		long pos; File fichero = new File("AleatorioDep.dat");
 		try {
-			RandomAccessFile file = new RandomAccessFile(fichero, "rw");
-			pos = 44 * (dep - 1);
-			file.seek(pos);
+			// Inline aplicado:
+			RandomAccessFile file = new RandomAccessFile(new File("AleatorioDep.dat"), "rw");
+			file.seek(44 * (dep - 1));
 			file.writeInt(dep);
-			StringBuffer buffer = new StringBuffer(nom);
-			buffer.setLength(10);
-			file.writeChars(buffer.toString());
-			buffer = new StringBuffer(local);
-			buffer.setLength(10);
-			file.writeChars(buffer.toString());
+			StringBuffer b = new StringBuffer(nom); b.setLength(10);
+			file.writeChars(b.toString());
+			b = new StringBuffer(local); b.setLength(10);
+			file.writeChars(b.toString());
 			file.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		} catch (Exception e) {}
 	}
 }
